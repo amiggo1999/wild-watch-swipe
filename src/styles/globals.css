@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-neutral-200;
+  }
+  
+  html {
+    @apply h-full w-full;
+    @apply overflow-hidden;
+  }
+  
+  body {
+    @apply bg-neutral-50 text-neutral-900;
+    @apply font-sans antialiased;
+    @apply overflow-hidden;
+    @apply h-full w-full;
+    @apply m-0 p-0;
+    @apply touch-none;
+  }
+
+  #root {
+    @apply h-full w-full;
+    @apply overflow-hidden;
+    @apply max-w-full;
+  }
+}
+
+@layer utilities {
+  .portrait-only {
+    /* Portrait-Lock für mobile Geräte */
+    @media (orientation: landscape) {
+      @apply hidden;
+    }
+  }
+}
+
