@@ -4,6 +4,7 @@ import { Header } from '@/components/Header'
 import { PhotoCard } from '@/components/PhotoCard'
 import { ActionButtons } from '@/components/ActionButtons'
 import { SplashScreen } from '@/components/SplashScreen'
+import { LoadingScreen } from '@/components/LoadingScreen'
 import { Toast } from '@/components/Toast'
 import { ImageData } from '@/types/images'
 import imagesData from '@/assets/images.json'
@@ -151,6 +152,9 @@ function App() {
   const [nextConfettiAt, setNextConfettiAt] = useState(0)
   const [pendingNextIndex, setPendingNextIndex] = useState<number | null>(null)
   const [displayedImageIds, setDisplayedImageIds] = useState<Set<number>>(new Set())
+  const [ratingsInBatch, setRatingsInBatch] = useState(0)
+  const [showLoadingScreen, setShowLoadingScreen] = useState(false)
+  const [batchSize, setBatchSize] = useState(0)
 
   useEffect(() => {
     // Lade images.json und filtere bereits bewertete Bilder heraus
@@ -169,6 +173,10 @@ function App() {
     // Initialisiere ersten Confetti-Zeitpunkt zufällig zwischen 3-5 Likes
     const randomInterval = Math.floor(Math.random() * 3) + 3
     setNextConfettiAt(randomInterval)
+    
+    // Initialisiere Batch-Größe zufällig zwischen 5-7
+    const randomBatchSize = Math.floor(Math.random() * 3) + 5
+    setBatchSize(randomBatchSize)
   }, [])
 
   useEffect(() => {
@@ -260,6 +268,7 @@ function App() {
     }
 
     const newLikeCount = likeCount + 1
+    const newRatingsInBatch = ratingsInBatch + 1
     
     // Zeige Confetti alle 3-5 mal (zufällig)
     if (newLikeCount >= nextConfettiAt) {
@@ -270,27 +279,42 @@ function App() {
     }
     
     setLikeCount(newLikeCount)
+    setRatingsInBatch(newRatingsInBatch)
 
+    // Berechne nächsten Index vor dem Prüfen des Batch-Limits
+    let calculatedNextIndex: number | null = null
+    
     if (checkAndResetIfAllSeen()) {
       const allImages = imagesData as ImageData[]
       const reshuffled = shuffleArray(allImages)
       setShuffledImages(reshuffled)
-      setCurrentIndex(0)
+      calculatedNextIndex = 0
+    } else {
+      calculatedNextIndex = getNextImageIndex()
+      if (calculatedNextIndex === null) {
+        const allImages = imagesData as ImageData[]
+        const notRatedImages = allImages.filter(img => !isRated(img.id))
+        if (notRatedImages.length > 0) {
+          const reshuffled = shuffleArray(notRatedImages)
+          setShuffledImages(reshuffled)
+          setDisplayedImageIds(new Set())
+          calculatedNextIndex = 0
+        }
+      }
+    }
+
+    // Prüfe, ob wir 5-7 Bewertungen erreicht haben
+    if (newRatingsInBatch >= batchSize) {
+      if (calculatedNextIndex !== null) {
+        setPendingNextIndex(calculatedNextIndex)
+      }
+      setShowLoadingScreen(true)
       return
     }
 
-    const nextIndex = getNextImageIndex()
-    if (nextIndex !== null) {
-      setCurrentIndex(nextIndex)
-    } else {
-      const allImages = imagesData as ImageData[]
-      const notRatedImages = allImages.filter(img => !isRated(img.id))
-      if (notRatedImages.length > 0) {
-        const reshuffled = shuffleArray(notRatedImages)
-        setShuffledImages(reshuffled)
-        setDisplayedImageIds(new Set())
-        setCurrentIndex(0)
-      }
+    // Ansonsten setze direkt zum nächsten Bild
+    if (calculatedNextIndex !== null) {
+      setCurrentIndex(calculatedNextIndex)
     }
   }
 
@@ -307,41 +331,53 @@ function App() {
       markToastAsShown()
     }
 
+    const newRatingsInBatch = ratingsInBatch + 1
+    setRatingsInBatch(newRatingsInBatch)
+
+    // Berechne nächsten Index vor dem Prüfen des Batch-Limits
+    let calculatedNextIndex: number | null = null
+    
     if (checkAndResetIfAllSeen()) {
       const allImages = imagesData as ImageData[]
       const reshuffled = shuffleArray(allImages)
       setShuffledImages(reshuffled)
-      if (shouldShowToast) {
-        setPendingNextIndex(0)
-      } else {
-        setCurrentIndex(0)
+      calculatedNextIndex = 0
+    } else {
+      calculatedNextIndex = getNextImageIndex()
+      if (calculatedNextIndex === null) {
+        const allImages = imagesData as ImageData[]
+        const notRatedImages = allImages.filter(img => !isRated(img.id))
+        if (notRatedImages.length > 0) {
+          const reshuffled = shuffleArray(notRatedImages)
+          setShuffledImages(reshuffled)
+          setDisplayedImageIds(new Set())
+          calculatedNextIndex = 0
+        }
       }
+    }
+
+    // Prüfe, ob wir 5-7 Bewertungen erreicht haben
+    if (newRatingsInBatch >= batchSize) {
+      // Wenn Toast angezeigt werden soll, speichere den Index für später
+      if (shouldShowToast && calculatedNextIndex !== null) {
+        setPendingNextIndex(calculatedNextIndex)
+      } else if (calculatedNextIndex !== null) {
+        setPendingNextIndex(calculatedNextIndex)
+      }
+      setShowLoadingScreen(true)
       return
     }
 
-    const nextIndex = getNextImageIndex()
-    if (nextIndex !== null) {
+    // Ansonsten setze direkt zum nächsten Bild (mit Toast-Logik)
+    if (calculatedNextIndex !== null) {
       if (shouldShowToast) {
-        setPendingNextIndex(nextIndex)
+        setPendingNextIndex(calculatedNextIndex)
       } else {
-        setCurrentIndex(nextIndex)
+        setCurrentIndex(calculatedNextIndex)
       }
     } else {
-      const allImages = imagesData as ImageData[]
-      const notRatedImages = allImages.filter(img => !isRated(img.id))
-      if (notRatedImages.length > 0) {
-        const reshuffled = shuffleArray(notRatedImages)
-        setShuffledImages(reshuffled)
-        setDisplayedImageIds(new Set())
-        if (shouldShowToast) {
-          setPendingNextIndex(0)
-        } else {
-          setCurrentIndex(0)
-        }
-      } else {
-        if (shouldShowToast) {
-          setPendingNextIndex(null)
-        }
+      if (shouldShowToast) {
+        setPendingNextIndex(null)
       }
     }
   }
@@ -352,6 +388,35 @@ function App() {
     if (pendingNextIndex !== null) {
       setCurrentIndex(pendingNextIndex)
       setPendingNextIndex(null)
+    }
+  }
+
+  const handleLoadingScreenComplete = () => {
+    setShowLoadingScreen(false)
+    // Reset Batch-Counter und setze neue Batch-Größe
+    setRatingsInBatch(0)
+    const randomBatchSize = Math.floor(Math.random() * 3) + 5
+    setBatchSize(randomBatchSize)
+    
+    // Setze zum nächsten Bild fort, falls noch ein pending index existiert
+    if (pendingNextIndex !== null) {
+      setCurrentIndex(pendingNextIndex)
+      setPendingNextIndex(null)
+    } else {
+      // Ansonsten finde das nächste Bild
+      const nextIndex = getNextImageIndex()
+      if (nextIndex !== null) {
+        setCurrentIndex(nextIndex)
+      } else {
+        const allImages = imagesData as ImageData[]
+        const notRatedImages = allImages.filter(img => !isRated(img.id))
+        if (notRatedImages.length > 0) {
+          const reshuffled = shuffleArray(notRatedImages)
+          setShuffledImages(reshuffled)
+          setDisplayedImageIds(new Set())
+          setCurrentIndex(0)
+        }
+      }
     }
   }
 
@@ -378,17 +443,24 @@ function App() {
 
   return (
     <div className="h-screen w-full flex items-center justify-center bg-neutral-50 app-wrapper">
-      <div className="h-full w-full max-w-[500px] flex flex-col overflow-hidden bg-neutral-50 app-container">
+      <div className="h-full w-full max-w-[500px] flex flex-col overflow-hidden bg-neutral-50 app-container relative">
         <Header />
-        <PhotoCard 
-          imageData={currentImage} 
-          imageUrl={currentImageUrl}
-          nextImageData={nextImage}
-          nextImageUrl={nextImageUrl}
-        />
+        <div className="relative flex-1">
+          {showLoadingScreen ? (
+            <LoadingScreen onComplete={handleLoadingScreenComplete} />
+          ) : (
+            <PhotoCard 
+              imageData={currentImage} 
+              imageUrl={currentImageUrl}
+              nextImageData={nextImage}
+              nextImageUrl={nextImageUrl}
+            />
+          )}
+        </div>
         <ActionButtons 
           onLike={handleLike}
           onDislike={handleDislike}
+          disabled={showLoadingScreen}
         />
         {showToast && (
           <Toast
