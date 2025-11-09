@@ -1,0 +1,37 @@
+[
+  {
+    "source": "badger",
+    "deutsch": "Dachs",
+    "ähnliche": ["Marder", "Iltis", "Zorilla", "Waschbär", "Honigdachs"]
+  },
+  {
+    "source": "dog",
+    "deutsch": "Hund",
+    "ähnliche": ["Wolf", "Kojote", "Fuchs", "Goldschakal"]
+  },
+  {
+    "source": "fox",
+    "deutsch": "Fuchs",
+    "ähnliche": [
+      "Schakal",
+      "Marderhund",
+      "kleiner Hund",
+      "Katze mit rötlichem Fell"
+    ]
+  },
+  {
+    "source": "mustelid",
+    "deutsch": "Marderart",
+    "ähnliche": ["Wiesel", "Hermelin", "Iltis", "Otter", "Dachs"]
+  },
+  {
+    "source": "raccoon",
+    "deutsch": "Waschbär",
+    "ähnliche": ["Dachs", "Marderhund", "Nasenbär", "Olingo"]
+  },
+  {
+    "source": "roe deer",
+    "deutsch": "Reh",
+    "ähnliche": ["Hirschkalb", "Damwild", "Sikahirsch", "junger Elch"]
+  }
+]

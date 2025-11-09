@@ -279,25 +279,27 @@ function App() {
     : undefined
 
   return (
-    <div className="h-screen w-screen flex flex-col overflow-hidden bg-neutral-50">
-      <Header />
-      <PhotoCard 
-        imageData={currentImage} 
-        imageUrl={currentImageUrl}
-        nextImageData={nextImage}
-        nextImageUrl={nextImageUrl}
-      />
-      <ActionButtons 
-        onLike={handleLike}
-        onDislike={handleDislike}
-      />
-      {showToast && (
-        <Toast
-          title="Danke für dein Feedback"
-          message="Es hilft uns, unser KI-Modell zu verbessern und mehr Wildtiere zu schützen."
-          onClose={handleToastClose}
+    <div className="h-screen w-full flex items-center justify-center bg-neutral-50 app-wrapper">
+      <div className="h-full w-full max-w-[500px] flex flex-col overflow-hidden bg-neutral-50 app-container">
+        <Header />
+        <PhotoCard 
+          imageData={currentImage} 
+          imageUrl={currentImageUrl}
+          nextImageData={nextImage}
+          nextImageUrl={nextImageUrl}
         />
-      )}
+        <ActionButtons 
+          onLike={handleLike}
+          onDislike={handleDislike}
+        />
+        {showToast && (
+          <Toast
+            title="Danke für dein Feedback"
+            message="Es hilft uns, unser KI-Modell zu verbessern und mehr Wildtiere zu schützen."
+            onClose={handleToastClose}
+          />
+        )}
+      </div>
     </div>
   )
 }

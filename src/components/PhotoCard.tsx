@@ -1,4 +1,5 @@
 import { ImageData } from '@/types/images'
+import { getGermanName } from '@/utils/translations'
 
 interface PhotoCardProps {
   imageData: ImageData
@@ -12,9 +13,19 @@ export function PhotoCard({ imageData, imageUrl, nextImageData, nextImageUrl }: 
   const nextImageOpacity = 0.15
   const nextImageScale = 0.9
   const nextImageBlur = 8
+  
+  // Übersetze den Tiernamen ins Deutsche
+  const germanName = getGermanName(imageData.label)
 
   return (
-    <div className="flex-1 flex items-center justify-center p-4 pt-20 pb-32">
+    <div className="flex-1 flex flex-col items-center justify-center p-4 pt-20 pb-32">
+      {/* Tiername über dem Bild */}
+      <div className="w-full flex justify-center mb-4 px-4">
+        <h2 className="text-xl md:text-2xl font-semibold text-neutral-900 text-center">
+          {germanName}
+        </h2>
+      </div>
+      
       <div className="w-full h-full max-w-full max-h-full flex items-center justify-center relative">
         {/* Nächstes Bild im Hintergrund */}
         {nextImageData && nextImageUrl && (
