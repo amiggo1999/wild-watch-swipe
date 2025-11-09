@@ -35,6 +35,111 @@ function getImageUrl(id: number): string {
   return url || ''
 }
 
+// 10 verschiedene Confetti-Konfigurationen
+const confettiConfigs = [
+  // 1. Waldgrün-Theme (von unten)
+  {
+    particleCount: 100,
+    spread: 70,
+    origin: { y: 0.6 },
+    colors: ['#4ade80', '#22c55e', '#16a34a', '#15803d'],
+    gravity: 0.8,
+    decay: 0.9,
+  },
+  // 2. Regenbogen-Burst (von oben)
+  {
+    particleCount: 150,
+    spread: 60,
+    origin: { y: 0.2, x: 0.5 },
+    colors: ['#ff0000', '#ff7f00', '#ffff00', '#00ff00', '#0000ff', '#4b0082', '#9400d3'],
+    gravity: 1.0,
+    decay: 0.92,
+    angle: 90,
+  },
+  // 3. Ozean-Blau-Theme (von links)
+  {
+    particleCount: 120,
+    spread: 55,
+    origin: { y: 0.5, x: 0 },
+    colors: ['#0ea5e9', '#0284c7', '#0369a1', '#075985', '#0c4a6e'],
+    gravity: 0.7,
+    decay: 0.88,
+    angle: 45,
+  },
+  // 4. Sonnenuntergang-Orange/Rot (von rechts)
+  {
+    particleCount: 130,
+    spread: 65,
+    origin: { y: 0.5, x: 1 },
+    colors: ['#f97316', '#ea580c', '#dc2626', '#ef4444', '#f59e0b'],
+    gravity: 0.75,
+    decay: 0.91,
+    angle: 135,
+  },
+  // 5. Lila/Violett-Theme (von der Mitte nach außen)
+  {
+    particleCount: 200,
+    spread: 80,
+    origin: { y: 0.5, x: 0.5 },
+    colors: ['#a855f7', '#9333ea', '#7c3aed', '#6d28d9', '#8b5cf6'],
+    gravity: 0.6,
+    decay: 0.85,
+    scalar: 1.2,
+  },
+  // 6. Gold/Gelb-Feier (von unten, diagonal)
+  {
+    particleCount: 110,
+    spread: 50,
+    origin: { y: 0.8, x: 0.5 },
+    colors: ['#fbbf24', '#f59e0b', '#d97706', '#facc15', '#eab308'],
+    gravity: 0.9,
+    decay: 0.93,
+    angle: 75,
+  },
+  // 7. Feuerwerk (mehrere Bursts von der Mitte)
+  {
+    particleCount: 180,
+    spread: 90,
+    origin: { y: 0.5, x: 0.5 },
+    colors: ['#ec4899', '#f43f5e', '#f97316', '#eab308', '#22c55e', '#3b82f6'],
+    gravity: 0.5,
+    decay: 0.87,
+    scalar: 1.3,
+    ticks: 200,
+  },
+  // 8. Seitlicher Burst links (grün-blaue Mischung)
+  {
+    particleCount: 140,
+    spread: 45,
+    origin: { y: 0.4, x: 0.1 },
+    colors: ['#10b981', '#059669', '#0d9488', '#14b8a6', '#06b6d4'],
+    gravity: 0.65,
+    decay: 0.89,
+    angle: 30,
+  },
+  // 9. Seitlicher Burst rechts (rot-pink Mischung)
+  {
+    particleCount: 140,
+    spread: 45,
+    origin: { y: 0.4, x: 0.9 },
+    colors: ['#f43f5e', '#e11d48', '#be123c', '#ec4899', '#db2777'],
+    gravity: 0.65,
+    decay: 0.89,
+    angle: 150,
+  },
+  // 10. Multi-Richtungs-Burst (explosionsartig)
+  {
+    particleCount: 250,
+    spread: 100,
+    origin: { y: 0.5, x: 0.5 },
+    colors: ['#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#3b82f6', '#ef4444'],
+    gravity: 0.4,
+    decay: 0.86,
+    scalar: 1.5,
+    ticks: 250,
+  },
+]
+
 function App() {
   const [showSplash, setShowSplash] = useState(true)
   const [shuffledImages, setShuffledImages] = useState<ImageData[]>([])
@@ -141,17 +246,10 @@ function App() {
   }
 
   const triggerConfetti = () => {
-    // Confetti-Animation mit Waldgrün-Farben
-    const colors = ['#4ade80', '#22c55e', '#16a34a', '#15803d'] // Grüntöne
+    // Wähle zufällig eine der 10 Konfigurationen
+    const randomConfig = confettiConfigs[Math.floor(Math.random() * confettiConfigs.length)]
     
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 },
-      colors: colors,
-      gravity: 0.8,
-      decay: 0.9,
-    })
+    confetti(randomConfig)
   }
 
   const handleLike = () => {
