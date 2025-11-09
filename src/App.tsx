@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import confetti from 'canvas-confetti'
 import { Header } from '@/components/Header'
-import { PhotoCard } from '@/components/PhotoCard'
+import { SwipeableCard } from '@/components/SwipeableCard'
 import { ActionButtons } from '@/components/ActionButtons'
 import { SplashScreen } from '@/components/SplashScreen'
 import { LoadingScreen } from '@/components/LoadingScreen'
@@ -449,11 +449,15 @@ function App() {
           {showLoadingScreen ? (
             <LoadingScreen onComplete={handleLoadingScreenComplete} />
           ) : (
-            <PhotoCard 
+            <SwipeableCard 
+              key={currentIndex}
               imageData={currentImage} 
               imageUrl={currentImageUrl}
               nextImageData={nextImage}
               nextImageUrl={nextImageUrl}
+              onSwipeLeft={handleDislike}
+              onSwipeRight={handleLike}
+              disabled={showLoadingScreen}
             />
           )}
         </div>
