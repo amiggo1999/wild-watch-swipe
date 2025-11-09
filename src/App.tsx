@@ -278,20 +278,14 @@ function App() {
     ? shuffledImages[nextImageIndex] 
     : undefined
 
-  // Prüfe ob Toast angezeigt wird (erster Dislike)
-  const shouldKeepPosition = showToast
-
   return (
     <div className="h-screen w-screen flex flex-col overflow-hidden bg-neutral-50">
       <Header />
       <PhotoCard 
         imageData={currentImage} 
         imageUrl={currentImageUrl}
-        onSwipeLeft={handleDislike}
-        onSwipeRight={handleLike}
         nextImageData={nextImage}
         nextImageUrl={nextImageUrl}
-        shouldKeepPosition={shouldKeepPosition}
       />
       <ActionButtons 
         onLike={handleLike}
