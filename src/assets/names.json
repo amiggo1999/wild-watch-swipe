@@ -15,7 +15,7 @@
     "ähnliche": [
       "Schakal",
       "Marderhund",
-      "kleiner Hund",
+      "Kleiner Hund",
       "Katze mit rötlichem Fell"
     ]
   },
@@ -32,6 +32,6 @@
   {
     "source": "roe deer",
     "deutsch": "Reh",
-    "ähnliche": ["Hirschkalb", "Damwild", "Sikahirsch", "junger Elch"]
+    "ähnliche": ["Hirschkalb", "Damwild", "Sikahirsch", "Junger Elch"]
   }
 ]
